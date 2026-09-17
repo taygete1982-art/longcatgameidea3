@@ -10,6 +10,7 @@
  */
 
 import * as THREE from 'three';
+import { CONFIG } from '../config.js';
 import { THEMES } from '../config/theme.js';
 
 const CONTAINER_LAYOUT = [
@@ -24,105 +25,10 @@ const CONTAINER_SIZES = [
   [2, 2, 1.5], [1.5, 1.5, 1.5], [3, 2, 2], [1, 1, 1],
 ];
 
-const BASE_COLORS = {
-  GLAC:   { floor: 0xd4b483, wall: 0xb5a642, ceiling: 0x1e6091 },
-  OBS:    { floor: 0x1a1a2e, wall: 0x2d2d44, ceiling: 0x1a1a2e },
-  CRYSTAL: { floor: 0x0a0a1a, wall: 0x1a1a2e, ceiling: 0x0a1a3a },
-};
-
-const NEON_COLORS = {
-  GLAC:   { cyan: 0x00aaff, red: 0xff3344 },
-  OBS:    { cyan: 0x0077aa, red: 0xff5566 },
-  CRYSTAL: { cyan: 0x0055aa, red: 0xff3366 },
-};
-
-// Базовые материалы (по одному на тему)
-const BASE_MATERIALS = {
-  GLAC: {
-    floor: new THREE.MeshStandardMaterial({ color: 0xd4b483, roughness: 0.95, metalness: 0.0 }),
-    wall: new THREE.MeshStandardMaterial({ color: 0xb5a642, roughness: 0.8, metalness: 0.0 }),
-    ceiling: new THREE.MeshStandardMaterial({ color: 0x1e6091, roughness: 0.7, metalness: 0.1 }),
-    container: new THREE.MeshStandardMaterial({ color: 0x8b7355, roughness: 0.6, metalness: 0.0 }),
-    pillar: new THREE.MeshStandardMaterial({ color: 0x5a6070, roughness: 0.5, metalness: 0.3 }),
-    hazard: new THREE.MeshStandardMaterial({ color: 0xffcc00, roughness: 0.7, metalness: 0.0 }),
-  },
-  OBS: {
-    floor: new THREE.MeshStandardMaterial({ color: 0x1a1a2e, roughness: 0.9, metalness: 0.0 }),
-    wall: new THREE.MeshStandardMaterial({ color: 0x2d2d44, roughness: 0.7, metalness: 0.3 }),
-    ceiling: new THREE.MeshStandardMaterial({ color: 0x1a1a2e, roughness: 0.6, metalness: 0.2 }),
-    container: new THREE.MeshStandardMaterial({ color: 0x3a3a5a, roughness: 0.5, metalness: 0.3 }),
-    pillar: new THREE.MeshStandardMaterial({ color: 0x4a4a6a, roughness: 0.5, metalness: 0.4 }),
-    hazard: new THREE.MeshStandardMaterial({ color: 0x8b3a1a, roughness: 0.7, metalness: 0.0 }),
-  },
-  CRYSTAL: {
-    floor: new THREE.MeshStandardMaterial({ color: 0x0a0a1a, roughness: 0.9, metalness: 0.0 }),
-    wall: new THREE.MeshStandardMaterial({ color: 0x1a1a2e, roughness: 0.6, metalness: 0.3 }),
-    ceiling: new THREE.MeshStandardMaterial({ color: 0x0a1a3a, roughness: 0.5, metalness: 0.4 }),
-    container: new THREE.MeshStandardMaterial({ color: 0x3a4a6a, roughness: 0.4, metalness: 0.4 }),
-    pillar: new THREE.MeshStandardMaterial({ color: 0x2a2a4a, roughness: 0.4, metalness: 0.5 }),
-    hazard: new THREE.MeshStandardMaterial({ color: 0xff3366, roughness: 0.5, metalness: 0.2 }),
-  },
-};
-
-// Материалы для неона и hazard-эффектов (по темам)
-const NEON_MATERIALS = {
-  GLAC: {
-    cyan: new THREE.MeshBasicMaterial({ color: 0x00aaff }),
-    red: new THREE.MeshBasicMaterial({ color: 0xff3344 }),
-  },
-  OBS: {
-    cyan: new THREE.MeshBasicMaterial({ color: 0x0077aa }),
-    red: new THREE.MeshBasicMaterial({ color: 0xff5566 }),
-  },
-  CRYSTAL: {
-    cyan: new THREE.MeshBasicMaterial({ color: 0x0055aa }),
-    red: new THREE.MeshBasicMaterial({ color: 0xff3366 }),
-  },
-};
-
-// Материалы для глаз врагов
-const EYE_MATERIALS = {
-  GLAC: {
-    stone: new THREE.MeshStandardMaterial({ color: 0x2a2a3a, roughness: 0.7, metalness: 0.0 }),
-    gold: new THREE.MeshStandardMaterial({ color: 0xb8860b, roughness: 0.3, metalness: 0.4 }),
-    red: new THREE.MeshStandardMaterial({ color: 0xff0000, emissive: 0xff0000, emissiveIntensity: 0.8, roughness: 0.2 }),
-  },
-  OBS: {
-    stone: new THREE.MeshStandardMaterial({ color: 0x1a1a2e, roughness: 0.6, metalness: 0.4 }),
-    gold: new THREE.MeshStandardMaterial({ color: 0xffd700, roughness: 0.2, metalness: 0.7 }),
-    red: new THREE.MeshStandardMaterial({ color: 0xff0000, emissive: 0xff0000, emissiveIntensity: 0.9, roughness: 0.2 }),
-  },
-  CRYSTAL: {
-    stone: new THREE.MeshStandardMaterial({ color: 0x0a1a3a, roughness: 0.5, metalness: 0.3 }),
-    gold: new THREE.MeshStandardMaterial({ color: 0xffd700, roughness: 0.2, metalness: 0.8 }),
-    red: new THREE.MeshStandardMaterial({ color: 0xff0000, emissive: 0xff0000, emissiveIntensity: 0.9, roughness: 0.2 }),
-  },
-};
-
-// Материалы для стрел
-const ARROW_MATERIALS = {
-  GLAC: {
-    wood: new THREE.MeshStandardMaterial({ color: 0x8b7355, roughness: 0.8, metalness: 0.0 }),
-    feather: new THREE.MeshStandardMaterial({ color: 0x7a8a3a, roughness: 0.7, metalness: 0.0 }),
-    fletch: new THREE.MeshStandardMaterial({ color: 0x0077aa, roughness: 0.6, metalness: 0.1 }),
-    head: new THREE.MeshStandardMaterial({ color: 0x4a3a2a, roughness: 0.5, metalness: 0.1 }),
-    trail: new THREE.MeshBasicMaterial({ color: 0xffd700, transparent: true, opacity: 0.5 }),
-  },
-  OBS: {
-    wood: new THREE.MeshStandardMaterial({ color: 0x4a3a2a, roughness: 0.8, metalness: 0.0 }),
-    feather: new THREE.MeshStandardMaterial({ color: 0x0077aa, roughness: 0.6, metalness: 0.1 }),
-    fletch: new THREE.MeshStandardMaterial({ color: 0x8b7355, roughness: 0.7, metalness: 0.0 }),
-    head: new THREE.MeshStandardMaterial({ color: 0xffd700, roughness: 0.3, metalness: 0.6 }),
-    trail: new THREE.MeshBasicMaterial({ color: 0x8b3a1a, transparent: true, opacity: 0.5 }),
-  },
-  CRYSTAL: {
-    wood: new THREE.MeshStandardMaterial({ color: 0x3a2a2a, roughness: 0.8, metalness: 0.0 }),
-    feather: new THREE.MeshStandardMaterial({ color: 0x0055aa, roughness: 0.6, metalness: 0.1 }),
-    fletch: new THREE.MeshStandardMaterial({ color: 0xff3366, roughness: 0.5, metalness: 0.2 }),
-    head: new THREE.MeshStandardMaterial({ color: 0xffd700, roughness: 0.2, metalness: 0.8 }),
-    trail: new THREE.MeshBasicMaterial({ color: 0xaa3366, transparent: true, opacity: 0.5 }),
-  },
-};
+// Конвертер palette {r,g,b,a} → THREE.Color
+function toColor(paletteEntry) {
+  return new THREE.Color(paletteEntry.r / 255, paletteEntry.g / 255, paletteEntry.b / 255);
+}
 
 export class StationBuilder {
   constructor(scene, themeName) {
@@ -131,20 +37,15 @@ export class StationBuilder {
     this.group.name = 'station';
     this.scene.add(this.group);
 
-    this.theme = THEMES[themeName];
+    this.themeName = (themeName || 'Glac').toUpperCase();
+    this.theme = THEMES[this.themeName];
     if (!this.theme) {
       throw new Error(`Unknown theme: ${themeName}`);
     }
 
-    this.materials = { ...BASE_MATERIALS[this.theme.name] };
-    this.materials.neonCyan = NEON_MATERIALS[this.theme.name].cyan;
-    this.materials.neonRed = NEON_MATERIALS[this.theme.name].red;
-    this.materials.hazard = this.materials.hazard ||
-      new THREE.MeshStandardMaterial({ color: 0x8b5a2b, roughness: 0.7, metalness: 0.0 });
-    this.materials.pillar = this.materials.pillar ||
-      new THREE.MeshStandardMaterial({ color: 0x5a6070, roughness: 0.5, metalness: 0.3 });
-    this.materials.container = this.materials.container ||
-      new THREE.MeshStandardMaterial({ color: 0x8b7355, roughness: 0.6, metalness: 0.0 });
+    this.matSet = new Set();
+    this.neonMats = [];
+    this.neonBase = 1.0;
 
     this.build();
   }
@@ -155,8 +56,7 @@ export class StationBuilder {
     this.buildCeiling();
     this.buildContainers();
     this.buildPillars();
-    this.buildNeon();
-    this.buildFloorGrid();
+    this.buildLights();
     this.buildBases();
     this.buildPipes();
     this.buildCorners();
@@ -171,7 +71,8 @@ export class StationBuilder {
 
   buildFloor() {
     const geo = new THREE.PlaneGeometry(CONFIG.arena.width, CONFIG.arena.depth);
-    const mat = this.materials.floor;
+    const mat = this.theme.floorMat;
+    this.matSet.add(mat);
     const floor = new THREE.Mesh(geo, mat);
     floor.rotation.x = -Math.PI / 2;
     floor.receiveShadow = true;
@@ -183,18 +84,23 @@ export class StationBuilder {
     const h = CONFIG.arena.wallHeight;
     const t = 0.5;
 
+    // Конвертируем палитру в THREE.Color
+    const wallPalette = this.theme.palette.wall || this.theme.palette.sand || this.theme.palette.obsidian;
+    const wallColor = toColor(wallPalette);
+
+    const wallMat = new THREE.MeshStandardMaterial({
+      color: wallColor,
+      roughness: 0.8,
+      metalness: 0.0,
+    });
+    this.matSet.add(wallMat);
+
     const walls = [
       { pos: [0, h / 2, -w / 2], size: [w, h, t] },
       { pos: [0, h / 2, w / 2], size: [w, h, t] },
       { pos: [w / 2, h / 2, 0], size: [t, h, w] },
       { pos: [-w / 2, h / 2, 0], size: [t, h, w] },
     ];
-
-    const wallMat = new THREE.MeshStandardMaterial({
-      color: this.theme.palette.wall,
-      roughness: 0.8,
-      metalness: 0.0,
-    });
 
     walls.forEach(({ pos, size }) => {
       const geo = new THREE.BoxGeometry(...size);
@@ -208,7 +114,8 @@ export class StationBuilder {
 
   buildCeiling() {
     const geo = new THREE.PlaneGeometry(CONFIG.arena.width, CONFIG.arena.width);
-    const mat = this.materials.ceiling;
+    const mat = this.theme.ceilingMat;
+    this.matSet.add(mat);
     const ceiling = new THREE.Mesh(geo, mat);
     ceiling.rotation.x = Math.PI / 2;
     ceiling.position.y = CONFIG.arena.wallHeight;
@@ -217,7 +124,9 @@ export class StationBuilder {
 
   buildContainers() {
     const geo = new THREE.BoxGeometry(1, 1, 1);
-    const mesh = new THREE.InstancedMesh(geo, this.materials.container, CONTAINER_LAYOUT.length);
+    const mat = this.theme.containerMat;
+    this.matSet.add(mat);
+    const mesh = new THREE.InstancedMesh(geo, mat, CONTAINER_LAYOUT.length);
     mesh.castShadow = true;
     mesh.receiveShadow = true;
 
@@ -237,7 +146,9 @@ export class StationBuilder {
   buildPillars() {
     const h = CONFIG.arena.wallHeight;
     const geo = new THREE.CylinderGeometry(0.3, 0.3, h, 8);
-    const mesh = new THREE.InstancedMesh(geo, this.materials.pillar, 6);
+    const mat = this.theme.pillarMat;
+    this.matSet.add(mat);
+    const mesh = new THREE.InstancedMesh(geo, mat, 6);
     mesh.castShadow = true;
 
     const dummy = new THREE.Object3D();
@@ -260,11 +171,66 @@ export class StationBuilder {
     this.group.add(mesh);
   }
 
+  buildLights() {
+    // Для Glac — факелы вместо неона. Для OBS/CRYSTAL — неон.
+    if (this.themeName === 'GLAC') {
+      this.buildTorches();
+    } else {
+      this.buildNeon();
+    }
+  }
+
+  buildTorches() {
+    // Факелы/жаровни: emissive-конус + PointLight тёплого цвета
+    const w = CONFIG.arena.width;
+    const torchPositions = [
+      [-w / 2 + 1, 2.5, -w / 2 + 1],
+      [w / 2 - 1, 2.5, -w / 2 + 1],
+      [-w / 2 + 1, 2.5, w / 2 - 1],
+      [w / 2 - 1, 2.5, w / 2 - 1],
+    ];
+
+    torchPositions.forEach(([x, y, z]) => {
+      // Жаровня — цилиндр
+      const baseGeo = new THREE.CylinderGeometry(0.2, 0.3, 0.5, 8);
+      const baseMat = new THREE.MeshStandardMaterial({ color: 0x4a3a2a, roughness: 0.7 });
+      this.matSet.add(baseMat);
+      const base = new THREE.Mesh(baseGeo, baseMat);
+      base.position.set(x, y - 0.25, z);
+      base.castShadow = true;
+      this.group.add(base);
+
+      // Пламя — emissive-конус
+      const flameGeo = new THREE.ConeGeometry(0.15, 0.6, 6);
+      const flameMat = new THREE.MeshStandardMaterial({
+        color: 0xff6600,
+        emissive: 0xff4400,
+        emissiveIntensity: 1.5,
+        roughness: 0.3,
+        transparent: true,
+        opacity: 0.9,
+      });
+      this.matSet.add(flameMat);
+      const flame = new THREE.Mesh(flameGeo, flameMat);
+      flame.position.set(x, y + 0.3, z);
+      this.group.add(flame);
+
+      // Тёплый PointLight
+      const light = new THREE.PointLight(0xff6600, 2.0, 12);
+      light.position.set(x, y + 0.5, z);
+      this.group.add(light);
+    });
+  }
+
   buildNeon() {
     const w = CONFIG.arena.width;
     const unit = new THREE.BoxGeometry(1, 1, 1);
-    const cyan = this.materials.neonCyan;
-    const red = this.materials.neonRed;
+    const cyan = this.theme.neonCyan;
+    const red = this.theme.neonRed;
+    this.matSet.add(cyan);
+    this.matSet.add(red);
+
+    const dummy = new THREE.Object3D();
 
     const fill = (mesh, items) => {
       items.forEach(([px, py, pz, sx, sy, sz], i) => {
@@ -278,34 +244,39 @@ export class StationBuilder {
       this.group.add(mesh);
     };
 
-    const dummy = new THREE.Object3D();
-    fill(new THREE.InstancedMesh(unit, cyan, 4), [
+    const cyanMesh = new THREE.InstancedMesh(unit, cyan, 4);
+    this.neonMats.push(cyan);
+    fill(cyanMesh, [
       [0, 2.8, -w / 2 + 0.35, w, 0.4, 0.4],
       [0, 2.8, w / 2 - 0.35, w, 0.4, 0.4],
       [0, 0.12, -w / 2 + 0.6, w, 0.12, 0.12],
       [0, 0.12, w / 2 - 0.6, w, 0.12, 0.12],
     ]);
-    fill(new THREE.InstancedMesh(unit, red, 4), [
+
+    const redMesh = new THREE.InstancedMesh(unit, red, 4);
+    this.neonMats.push(red);
+    fill(redMesh, [
       [-w / 2 + 0.35, 2.8, 0, 0.4, 0.4, w],
       [w / 2 - 0.35, 2.8, 0, 0.4, 0.4, w],
       [-w / 2 + 0.6, 0.12, 0, 0.12, 0.12, w],
       [w / 2 - 0.6, 0.12, 0, 0.12, 0.12, w],
     ]);
-  }
 
-  buildFloorGrid() {
-    const grid = new THREE.GridHelper(CONFIG.arena.width, 20, 0x00aaff, 0x1a2a3a);
-    grid.position.y = 0.02;
-    grid.material.transparent = true;
-    grid.material.opacity = 0.35;
-    this.group.add(grid);
+    // Пол без GridHelper для Glac, с ним для остальных
+    if (this.themeName !== 'GLAC') {
+      const grid = new THREE.GridHelper(CONFIG.arena.width, 20, 0x00aaff, 0x1a2a3a);
+      grid.position.y = 0.02;
+      grid.material.transparent = true;
+      grid.material.opacity = 0.35;
+      this.group.add(grid);
+    }
   }
 
   buildBases() {
     // Зиккурат (Glac), алтарь (Obs), кристалл (Crystal)
-    if (this.theme.name === 'Glac') {
+    if (this.themeName === 'GLAC') {
       this.buildZigguratBase();
-    } else if (this.theme.name === 'Obs') {
+    } else if (this.themeName === 'OBS') {
       this.buildAltarBase();
     } else {
       this.buildCrystalBase();
@@ -319,6 +290,7 @@ export class StationBuilder {
       roughness: 0.8,
       metalness: 0.0,
     });
+    this.matSet.add(mat);
     const base = new THREE.Mesh(geo, mat);
     base.position.y = 2.0;
     base.castShadow = true;
@@ -335,6 +307,7 @@ export class StationBuilder {
       })
     );
     heart.position.y = 3.0;
+    this.matSet.add(heart.material);
     base.add(heart);
   }
 
@@ -345,6 +318,7 @@ export class StationBuilder {
       roughness: 0.6,
       metalness: 0.2,
     });
+    this.matSet.add(mat);
     const base = new THREE.Mesh(geo, mat);
     base.position.y = 1.5;
     base.castShadow = true;
@@ -360,6 +334,7 @@ export class StationBuilder {
       })
     );
     table.position.y = 1.65;
+    this.matSet.add(table.material);
     base.add(table);
   }
 
@@ -370,6 +345,7 @@ export class StationBuilder {
       roughness: 0.1,
       metalness: 0.6,
     });
+    this.matSet.add(mat);
     const base = new THREE.Mesh(geo, mat);
     base.position.y = 3.0;
     base.castShadow = true;
@@ -387,6 +363,7 @@ export class StationBuilder {
       })
     );
     crystal.position.y = 4.5;
+    this.matSet.add(crystal.material);
     base.add(crystal);
   }
 
@@ -398,6 +375,7 @@ export class StationBuilder {
       roughness: 0.6,
       metalness: 0.3,
     });
+    this.matSet.add(mat);
     const mesh = new THREE.InstancedMesh(geo, mat, 4);
     const dummy = new THREE.Object3D();
     [-15, -5, 5, 15].forEach((z, i) => {
@@ -418,6 +396,7 @@ export class StationBuilder {
       roughness: 0.7,
       metalness: 0.1,
     });
+    this.matSet.add(mat);
     const mesh = new THREE.InstancedMesh(geo, mat, 4);
     mesh.castShadow = true;
     const dummy = new THREE.Object3D();
@@ -440,6 +419,7 @@ export class StationBuilder {
       roughness: 0.7,
       metalness: 0.1,
     });
+    this.matSet.add(mat);
     const mesh = new THREE.InstancedMesh(geo, mat, 4);
     mesh.castShadow = true;
     mesh.receiveShadow = true;
@@ -458,8 +438,8 @@ export class StationBuilder {
   dispose() {
     this.group.traverse(child => {
       if (child.geometry) child.geometry.dispose();
-      if (child.material && !this.mats.has(child.material)) child.material.dispose();
     });
+    this.matSet.forEach(mat => mat.dispose());
     this.scene.remove(this.group);
   }
 }

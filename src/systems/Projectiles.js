@@ -5,15 +5,12 @@
  * 
  * Structure:
  *   - ArrowProjectile: one mesh per arrow + one LineTrail mesh per arrow
- *     - mesh: BoxGeometry(0.06, 0.06, 0.6) + ArrowShape silhouette
- *     - trail: Line (10 segments) following parabolic arc
  *   - Projectiles: pool of ArrowProjectiles
  * 
  * Physics: parabolic arc via Math.sin(t * π) * verticalSpeed
  */
 import * as THREE from 'three';
 import { CONFIG } from '../config.js';
-import { THEMES } from '../config/theme.js';
 import { ArrowProjectile } from '../entities/ArrowProjectile.js';
 
 // ============================================================
@@ -24,7 +21,7 @@ export class Projectiles {
   constructor(scene, opts = {}) {
     const count = opts.pool ?? CONFIG.combat.pool;
     const speed = opts.speed ?? CONFIG.combat.projectileSpeed;
-    const theme = opts.theme ?? CONFIG.theme;
+    const theme = opts.theme ?? 'Glac';
 
     this.count = count;
     this.speed = speed;
@@ -38,10 +35,9 @@ export class Projectiles {
 
   fire(origin, dir) {
     const slot = this.projectiles.find(p => !p.active);
-    if (!slot) return;
-    slot.active = true;
-    slot.mesh.position.copy(origin);
-    slot.life = this.speed;
+    if (!slot) return null;
+    slot.fire(origin, dir);
+    return slot;
   }
 
   update(dt, dummies, bounds, onHit) {
@@ -50,8 +46,11 @@ export class Projectiles {
       if (!p.active) continue;
 
       p.update(dt);
+      
       if (p.isHit()) {
         p.active = false;
+        p.mesh.visible = false;
+        p.trail.visible = false;
         continue;
       }
 
@@ -65,6 +64,9 @@ export class Projectiles {
           hit = true;
           d.hp -= 10; // Arrow damage
           onHit(d);
+          p.active = false;
+          p.mesh.visible = false;
+          p.trail.visible = false;
           break;
         }
       }
@@ -76,6 +78,8 @@ export class Projectiles {
   clear() {
     for (const p of this.projectiles) {
       p.active = false;
+      p.mesh.visible = false;
+      p.trail.visible = false;
       p.mesh.position.set(0, 0, 0);
     }
   }

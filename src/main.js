@@ -5,6 +5,7 @@ import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
 import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
 import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 import { CONFIG } from './config.js';
+import LEVELS from './config/levels.js';
 import { SceneManager } from './core/SceneManager.js';
 import { LightManager } from './core/LightManager.js';
 import { StationBuilder } from './world/StationBuilder.js';
@@ -33,19 +34,23 @@ class Game {
   }
 
   init() {
+    // Уровень и тема
+    const level = LEVELS[0];
+    this.level = level;
+    this.themeName = level.theme; // 'Glac' | 'Obs' | 'Crystal'
+
     this.sceneManager = new SceneManager(this.container);
     this.scene = this.sceneManager.scene;
     this.camera = this.sceneManager.camera;
     this.renderer = this.sceneManager.renderer;
 
     // Env-карта: нейтральный студийный IBL, без HDR-файлов (shader-cookbook).
-    // r158: scene.environmentIntensity нет — работаем через envMapIntensity материалов.
     const pmrem = new THREE.PMREMGenerator(this.renderer);
     this.scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
     pmrem.dispose();
 
-    this.stationBuilder = new StationBuilder(this.scene);
-    this.stationBuilder.build();
+    // StationBuilder с темой из уровня
+    this.stationBuilder = new StationBuilder(this.scene, this.themeName);
     this.bounds = this.stationBuilder.getBounds();
 
     // Оборона базы: ворота сверху, база снизу.
@@ -54,9 +59,9 @@ class Game {
     this.player.group.position.set(0, 0, 12);
     this.followCam = new FollowCamera(this.camera);
     this.enemies = new Enemies(this.scene, 24);
-    this.gates = new Gates(this.scene);
+    this.gates = new Gates(this.scene, level.gates);
     this.base = new Base(this.scene);
-    this.waves = new Waves(this.container, () => this.gates.pickSpawn(), this.config.waves.waveCount);
+    this.waves = new Waves(this.container, () => this.gates.pickSpawn(), level.waves.length);
     this.bolts = new Projectiles(this.scene);
     this.enemyBolts = new Projectiles(this.scene, { color: 0xff4444, speed: CONFIG.combat.enemyBoltSpeed, pool: CONFIG.combat.enemyBoltPool, life: 2.2 });
     this.fireTimer = 0;

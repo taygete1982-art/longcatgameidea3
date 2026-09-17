@@ -5,6 +5,7 @@
  */
 import { CONFIG } from '../config.js';
 
+// Базовые определения волн (fallback, если levelWaves не передан)
 const WAVE_DEFS = [
   { runner: 4, shooter: 0, tank: 0, miniboss: 0 },
   { runner: 6, shooter: 2, tank: 0, miniboss: 0 },
@@ -14,7 +15,7 @@ const WAVE_DEFS = [
   { runner: 12, shooter: 6, tank: 3, miniboss: 1 },
 ];
 
-const DEFAULT_WAVE_COUNT = 6; // 5 waves + endless from wave 6
+const DEFAULT_WAVE_COUNT = 6;
 
 export class Waves {
   constructor(container, spawner, waveCount = DEFAULT_WAVE_COUNT) {

@@ -11,6 +11,7 @@
  *  - материалы для глаз врагов
  *  - материалы для стрел (дерево, перо, флетч, наконечник, след)
  */
+import * as THREE from 'three';
 
 // Палитра Glin (глина)
 const PALETTE_GLAC = {
@@ -118,7 +119,7 @@ const HAZARD_MATERIALS = {
   CRYSTAL: new THREE.MeshStandardMaterial({ color: 0xff3366, roughness: 0.5, metalness: 0.2 }),
 };
 
-// Материалы для неоновых свечей
+// Материалы для неоновых свечений
 const NEON_MATERIALS = {
   GLAC: {
     cyan: new THREE.MeshBasicMaterial({ color: 0x00aaff }),
@@ -160,18 +161,21 @@ const ARROW_MATERIALS = {
     feather: new THREE.MeshStandardMaterial({ color: 0x7a8a3a, roughness: 0.7, metalness: 0.0 }),
     fletch: new THREE.MeshStandardMaterial({ color: 0x0077aa, roughness: 0.6, metalness: 0.1 }),
     head: new THREE.MeshStandardMaterial({ color: 0x4a3a2a, roughness: 0.5, metalness: 0.1 }),
+    trail: new THREE.MeshBasicMaterial({ color: 0xffd700, transparent: true, opacity: 0.5 }),
   },
   OBS: {
     wood: new THREE.MeshStandardMaterial({ color: 0x4a3a2a, roughness: 0.8, metalness: 0.0 }),
     feather: new THREE.MeshStandardMaterial({ color: 0x0077aa, roughness: 0.6, metalness: 0.1 }),
     fletch: new THREE.MeshStandardMaterial({ color: 0x8b7355, roughness: 0.7, metalness: 0.0 }),
     head: new THREE.MeshStandardMaterial({ color: 0xffd700, roughness: 0.3, metalness: 0.6 }),
+    trail: new THREE.MeshBasicMaterial({ color: 0x8b3a1a, transparent: true, opacity: 0.5 }),
   },
   CRYSTAL: {
     wood: new THREE.MeshStandardMaterial({ color: 0x3a2a2a, roughness: 0.8, metalness: 0.0 }),
     feather: new THREE.MeshStandardMaterial({ color: 0x0055aa, roughness: 0.6, metalness: 0.1 }),
     fletch: new THREE.MeshStandardMaterial({ color: 0xff3366, roughness: 0.5, metalness: 0.2 }),
     head: new THREE.MeshStandardMaterial({ color: 0xffd700, roughness: 0.2, metalness: 0.8 }),
+    trail: new THREE.MeshBasicMaterial({ color: 0xaa3366, transparent: true, opacity: 0.5 }),
   },
 };
 
@@ -195,6 +199,7 @@ export const THEMES = {
     arrowFeather: ARROW_MATERIALS.GLAC.feather,
     arrowFletch: ARROW_MATERIALS.GLAC.fletch,
     arrowHead: ARROW_MATERIALS.GLAC.head,
+    arrowTrail: ARROW_MATERIALS.GLAC.trail,
   },
   OBS: {
     name: 'Obs',
@@ -214,6 +219,7 @@ export const THEMES = {
     arrowFeather: ARROW_MATERIALS.OBS.feather,
     arrowFletch: ARROW_MATERIALS.OBS.fletch,
     arrowHead: ARROW_MATERIALS.OBS.head,
+    arrowTrail: ARROW_MATERIALS.OBS.trail,
   },
   CRYSTAL: {
     name: 'Crystal',
@@ -233,41 +239,51 @@ export const THEMES = {
     arrowFeather: ARROW_MATERIALS.CRYSTAL.feather,
     arrowFletch: ARROW_MATERIALS.CRYSTAL.fletch,
     arrowHead: ARROW_MATERIALS.CRYSTAL.head,
+    arrowTrail: ARROW_MATERIALS.CRYSTAL.trail,
   },
 };
 
 // Хелпер: получить палитру по имени темы
 export function getPalette(themeName) {
-  return THEMES[themeName].palette;
+  const t = THEMES[themeName];
+  if (!t) throw new Error(`Unknown theme: ${themeName}`);
+  return t.palette;
 }
 
 // Хелпер: получить материал стены по теме
 export function getWallMaterial(themeName) {
-  return THEMES[themeName].wallMat;
+  const t = THEMES[themeName];
+  if (!t) throw new Error(`Unknown theme: ${themeName}`);
+  return t.wallMat;
 }
 
 // Хелпер: получить материал пола по теме
 export function getFloorMaterial(themeName) {
-  return THEMES[themeName].floorMat;
+  const t = THEMES[themeName];
+  if (!t) throw new Error(`Unknown theme: ${themeName}`);
+  return t.floorMat;
 }
 
 // Хелпер: получить материал глаза по типу врага и теме
 export function getEyeMaterial(themeName, eyeType) {
-  const materials = THEMES[themeName].eyeStone;
+  const t = THEMES[themeName];
+  if (!t) throw new Error(`Unknown theme: ${themeName}`);
   switch (eyeType) {
-    case 'gold': return materials.gold;
-    case 'red': return materials.red;
-    default: return materials.stone;
+    case 'gold': return t.eyeGold;
+    case 'red': return t.eyeRed;
+    default: return t.eyeStone;
   }
 }
 
 // Хелпер: получить материал стрелы по типу и теме
 export function getArrowMaterial(themeName, type) {
-  const materials = THEMES[themeName].arrowWood;
+  const t = THEMES[themeName];
+  if (!t) throw new Error(`Unknown theme: ${themeName}`);
   switch (type) {
-    case 'feather': return materials.feather;
-    case 'fletch': return materials.fletch;
-    case 'head': return materials.head;
-    default: return materials.wood;
+    case 'feather': return t.arrowFeather;
+    case 'fletch': return t.arrowFletch;
+    case 'head': return t.arrowHead;
+    case 'trail': return t.arrowTrail;
+    default: return t.arrowWood;
   }
 }

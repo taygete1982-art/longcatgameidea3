@@ -27,14 +27,14 @@ export const CONFIG = {
     cameraSize: 30,
   },
 
-  // Читает: Game (scene.fog).
+  // Читает: Game (scene.fog). Может переопределяться темой.
   fog: {
     type: 'exponential2',
     color: 0x0a0a1a,
     density: 0.008,
   },
 
-  // Читает: Game (UnrealBloomPass — светится только яркий неон).
+  // Читает: Game (UnrealBloomPass). Может переопределяться темой.
   post: {
     bloomStrength: 0.55,
     bloomRadius: 0.4,
@@ -70,7 +70,7 @@ export const CONFIG = {
   // Читает: Gates (трое ворот в северной стене).
   gates: { xs: [-12, 0, 12], z: -19 },
 
-  // Читает: Game.wireLights.
+  // Читает: Game.wireLights. Базовые лампы (для тем OBS/CRYSTAL).
   lights: {
     ambient: { color: 0x334466, intensity: 0.7 },
     hemisphere: { skyColor: 0x446688, groundColor: 0x222244, intensity: 0.6 },
@@ -86,6 +86,53 @@ export const CONFIG = {
       { id: 'pulse_red_2', color: 0xff3344, intensity: 1.2, position: { x: 15, y: 4, z: -15 }, pulse: true },
     ],
   },
+
+  // Темы — переопределяют lights, fog, post для каждого биома.
+  themes: {
+    Glac: {
+      lights: {
+        ambient: { color: 0x554433, intensity: 0.5 },
+        hemisphere: { skyColor: 0xddccaa, groundColor: 0xaa9977, intensity: 0.6 },
+        directional: { color: 0xffd9a0, intensity: 1.5, position: { x: 10, y: 25, z: 10 } },
+        pointLights: [],  // без неона — факелы вместо него
+      },
+      fog: { color: 0xd8c8a8, density: 0.005 },
+      render: { clearColor: 0xddccaa },
+      post: { bloomStrength: 0.15, bloomRadius: 0.3, bloomThreshold: 0.95 },
+    },
+    Obs: {
+      // наследует базовые lights
+      fog: { color: 0x0a0a1a, density: 0.008 },
+      render: { clearColor: 0x0a0a1a },
+    },
+    Crystal: {
+      lights: {
+        ambient: { color: 0x223344, intensity: 0.6 },
+        hemisphere: { skyColor: 0x4466aa, groundColor: 0x112233, intensity: 0.5 },
+        directional: { color: 0xaaccff, intensity: 1.0, position: { x: 10, y: 20, z: 10 } },
+        pointLights: [
+          { id: 'crystal_blue_1', color: 0x0055ff, intensity: 1.8, position: { x: -15, y: 4, z: -15 }, pulse: true },
+          { id: 'crystal_blue_2', color: 0x0055ff, intensity: 1.8, position: { x: 15, y: 4, z: 15 }, pulse: true },
+          { id: 'crystal_pink_1', color: 0xff3399, intensity: 1.4, position: { x: -15, y: 4, z: 15 }, pulse: true },
+          { id: 'crystal_pink_2', color: 0xff3399, intensity: 1.4, position: { x: 15, y: 4, z: -15 }, pulse: true },
+        ],
+      },
+      fog: { color: 0x050510, density: 0.012 },
+      render: { clearColor: 0x050510 },
+      post: { bloomStrength: 0.6, bloomRadius: 0.5, bloomThreshold: 0.8 },
+    },
+  },
+
+  // Маппинг индексов levels.js → id EnemyTypes → ключ CONFIG.enemies.
+  // Используется Waves/Enemies для спавна.
+  enemyMap: [
+    /* 0 */ { type: 'runner',   id: 'parchment' },  // беженец
+    /* 1 */ { type: 'shooter',  id: 'archer' },     // бандит
+    /* 2 */ { type: 'tank',     id: 'golem' },      // пехота
+    /* 3 */ { type: 'shooter',  id: 'scribes' },    // штурмовик
+    /* 4 */ { type: 'tank',     id: 'mini_golem' }, // танк
+    /* 5 */ { type: 'runner',   id: 'mini_shed' },  // гусеница
+  ],
 
   // Читает: Game (debug-хелперы).
   debug: {

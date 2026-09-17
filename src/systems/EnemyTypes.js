@@ -201,15 +201,3 @@ export function createEnemyTypes(theme) {
     bossShedDef,
   ];
 }
-
-export default {
-  parchmentDef,
-  golemDef,
-  shedDef,
-  archerDef,
-  scribesDef,
-  miniGolemDef,
-  miniShedDef,
-  bossGolemDef,
-  bossShedDef,
-};
