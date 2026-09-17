@@ -50,8 +50,9 @@ export const CONFIG = {
   // Читает: Projectiles + Game (темп, скорость, дальность, пул).
   combat: { fireRate: 3, projectileSpeed: 22, range: 30, pool: 32, enemyBoltSpeed: 14, enemyBoltPool: 48 },
 
-  // Читает: FollowCamera (высота, отступ, упреждение, сглаживание).
-  camera: { height: 18, back: 11, lookAhead: 4, smooth: 5 },
+  // Читает: SceneManager + FollowCamera.
+  // topDown: статическая камера сверху — вся арена всегда видна.
+  camera: { height: 18, back: 11, lookAhead: 4, smooth: 5, topDown: true, fov: 70, far: 2000 },
 
   // Читает: Enemy (HP, скорость, урон, дистанция). Урон: melee/bolt в единицах HP.
   enemies: {

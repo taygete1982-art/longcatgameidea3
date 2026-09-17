@@ -24,13 +24,14 @@ export class SceneManager {
   }
 
   createCamera() {
+    const C = CONFIG.camera;
     const camera = new THREE.PerspectiveCamera(
-      60,
+      C.fov || 60,
       window.innerWidth / window.innerHeight,
       0.1,
-      1000
+      C.far || 1000
     );
-    camera.position.set(0, 15, -12);
+    camera.position.set(0, 65, 0.1);
     camera.lookAt(0, 0, 0);
     return camera;
   }
