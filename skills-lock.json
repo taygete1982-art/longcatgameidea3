@@ -1,0 +1,47 @@
+{
+  "version": 1,
+  "skills": {
+    "author-game-levels": {
+      "source": "mengto/skills",
+      "sourceType": "github",
+      "skillPath": "agent-skills/game-development/author-game-levels/SKILL.md",
+      "computedHash": "1a9ba7dbe5b0f22bc0479ad442e279cd9e8bf67d8b076e16311c208a61de57c8"
+    },
+    "find-skills": {
+      "source": "vercel-labs/skills",
+      "sourceType": "github",
+      "skillPath": "skills/find-skills/SKILL.md",
+      "computedHash": "b146008599c31057cef1c145774cea5d5afb30e8f43fa802e47a4b461419aaaf"
+    },
+    "game-ai": {
+      "source": "gamedev-skills/awesome-gamedev-agent-skills",
+      "sourceType": "github",
+      "skillPath": "skills/disciplines/game-ai/SKILL.md",
+      "computedHash": "aaf0562a4b8a375af9dbdff7dc489a9f54bb4e2ab2096425a96a5979a8b5e8a8"
+    },
+    "optimize-threejs-games": {
+      "source": "mengto/skills",
+      "sourceType": "github",
+      "skillPath": "agent-skills/game-development/optimize-threejs-games/SKILL.md",
+      "computedHash": "2d9e8df7ef368735ab4da81fd15733eecfe33ff600fcb6d70262e4f70d751eea"
+    },
+    "threejs-aaa-graphics-builder": {
+      "source": "majidmanzarpour/threejs-game-skills",
+      "sourceType": "github",
+      "skillPath": "skills/threejs-aaa-graphics-builder/SKILL.md",
+      "computedHash": "448722f07ee400500c6c3e7b9070a8c8e2582ec1331dc4e3563cbf1ad2732007"
+    },
+    "threejs-textures": {
+      "source": "cloudai-x/threejs-skills",
+      "sourceType": "github",
+      "skillPath": "skills/threejs-textures/SKILL.md",
+      "computedHash": "5afbbaa048507fcbb76adca76cdc2fa58f7edb68383c0c48785756fecb68a2d0"
+    },
+    "tune-enemy-ai": {
+      "source": "mengto/skills",
+      "sourceType": "github",
+      "skillPath": "agent-skills/game-development/tune-enemy-ai/SKILL.md",
+      "computedHash": "71f26c237acfabea8af01c08eee40a38552b28aa0d7c68edbeaeec4109702f3b"
+    }
+  }
+}
