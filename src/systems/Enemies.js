@@ -15,7 +15,15 @@ export class Enemies {
   spawn(type, pos) {
     const e = this.pool.find(e => !e.active);
     if (!e) return null;
-    e.spawn(type, pos);
+    // Маппинг старых ключей Waves → id из EnemyTypes
+    const typeMap = {
+      runner: 'parchment',
+      shooter: 'scribes',
+      tank: 'golem',
+      miniboss: 'mini_golem',
+    };
+    const mappedType = typeMap[type] || type;
+    e.spawn(mappedType, pos);
     return e;
   }
 

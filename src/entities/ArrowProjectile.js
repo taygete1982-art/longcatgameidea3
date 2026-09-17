@@ -72,12 +72,9 @@ export class ArrowProjectile {
     this.scene.add(this.mesh);
 
     // Trail: Line with 12 segments
-    const trailPoints = [];
-    for (let i = 0; i < 13; i++) {
-      trailPoints.push(new THREE.Vector3(0, 0, 0));
-    }
+    const trailPoints = new Float32Array(13 * 3); // 13 points × 3 coords, all zeros
     this.trailGeo = new THREE.BufferGeometry();
-    this.trailGeo.setAttribute('position', new THREE.Float32BufferAttribute(trailPoints, 3));
+    this.trailGeo.setAttribute('position', new THREE.BufferAttribute(trailPoints, 3));
     this.trailMat = mats.trail;
     this.trail = new THREE.Line(this.trailGeo, this.trailMat);
     this.trail.frustumCulled = false;
